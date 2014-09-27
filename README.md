@@ -55,5 +55,9 @@ If you run the app again, it will kill your VPN session AND the `keepalive` sess
 
 I use [Quicksilver](http://qsapp.com/) and I've configured a keyboard trigger (shortcut) so I can start and stop all of this with a handy key combination.
 
+####keepalive_install
+
+Pretty self explanatory.  Run it and it will copy the two shell scripts to `/usr/local/bin/`.  This is of course assuming that you're using the standard Mac OS X $PATH value.  If not, you'll need to add `/usr/local/bin/` to your path.  `keepalive.app` gets copied to /Applications
+
 <hr>
 Please let me know if something is very wrong and I'll try my best to fix it.

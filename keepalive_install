@@ -1,5 +1,5 @@
 #!/bin/bash
 
-sudo mv keepalive /usr/local/bin/keepalive
-sudo mv keepalive_screen /usr/local/bin/keepalive_screen
-sudo mv keepalive.app /Applications
+sudo cp keepalive /usr/local/bin/keepalive
+sudo cp keepalive_screen /usr/local/bin/keepalive_screen
+sudo cp -R keepalive.app/ /Applications/.
