@@ -1,0 +1,50 @@
+#!/bin/bash
+
+E_OPTERROR=13
+
+uri="code.livingsocial.net"
+maxtime=259200
+quiet="no"
+
+usage () {
+  echo -e "\nUsage: `basename $0` [-ksutq]\n\n  OPTIONS:"
+  echo -e "    -k        Kill all screen sessions with label 'keepalive'\n"
+  echo -e "    -s        Start a screen session labeled 'keepalive' and run the keepalive script\n"
+  echo -e "    -u <URI>  specify URI (FQDN) to cURL and ping.  URI only (no http://) [OPTIONAL]"
+  echo -e "              DEFAULT: code.livingsocial.net\n"
+  echo -e "    -t <TIME> Maximum runtime in seconds [OPTIONAL]"
+  echo -e "              DEFAULT: 259200 == 3 days\n"
+  echo -e "    -q        Quiet -- do not return screen status after startup or kill"
+  exit $E_OPTERROR
+}
+
+
+killd () {
+  for session in $(screen -ls | grep keepalive | sed 's/\([0-9]*\.keepalive\).*/\1/')
+  do
+    screen -S "${session}" -X quit;
+  done
+}
+
+startd () {
+  killd
+  screen -S keepalive -d -m
+  screen -S keepalive -p 0 -X stuff "keepalive -u $uri -t $maxtime$(printf \\r)"
+}
+
+while getopts ":u:t:ksq" Option
+do
+  case $Option in
+    k ) killd;;
+    s ) startd;;
+    u ) uri=$OPTARG;;
+    t ) maxtime=$OPTARG;;
+    q) quiet="yes";;
+    * ) usage
+  esac
+done
+shift $(($OPTIND - 1))
+
+if [[ "$quiet" == "no" ]];then
+  screen -ls
+fi

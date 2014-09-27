@@ -1,0 +1,43 @@
+#!/bin/bash
+
+E_OPTERROR=13
+
+uri="code.livingsocial.net"
+maxtime=259200
+
+usage () {
+  echo -e "\nUsage: `basename $0` [-ut]\n\n  OPTIONS:"
+  echo -e "    -u <URI>  specify URI (FQDN) to cURL and ping.  URI only (no http://) [OPTIONAL]"
+  echo -e "              DEFAULT: code.livingsocial.net\n"
+  echo -e "    -t <TIME> Maximum runtime in seconds [OPTIONAL]"
+  echo -e "              DEFAULT: 259200 == 3 days\n"
+  exit $E_OPTERROR
+}
+
+ping_func () {
+  result=`ping -c 2 -t 30 $uri`
+  if [[ -z $result ]];then
+    echo -e "Unable to ping site $uri\n"
+  else
+    echo -e "Ping'd site $uri\n"
+  fi
+}
+
+while getopts ":u:t:" Option
+do
+  case $Option in
+    u ) uri=$OPTARG;;
+    t ) maxtime=$OPTARG;;
+    * ) usage
+  esac
+done
+shift $(($OPTIND - 1))
+
+for ((x=0;x<$maxtime;x++));do
+  sleep 1
+  if [[ `expr $x % 120` -eq 0 ]];then
+    date
+    curl --max-time 60 --connect-timeout 30 -sL -w "\"%{url_effective}\" came back with:\n  Response: %{http_code}\n  Total time to respond: %{time_total}\\n" "http://$uri" -o /dev/null
+    ping_func
+  fi
+done
