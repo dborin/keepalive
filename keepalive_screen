@@ -20,6 +20,11 @@ usage () {
 
 
 killd () {
+  for pid in `ps -ef | grep /usr/local/bin/keepalive | grep -v grep | cut -d ' ' -f4`
+  do
+    kill -9 $pid
+  done
+
   for session in $(screen -ls | grep keepalive | sed 's/\([0-9]*\.keepalive\).*/\1/')
   do
     screen -S "${session}" -X quit;
