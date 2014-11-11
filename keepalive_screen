@@ -20,7 +20,7 @@ usage () {
 
 
 killd () {
-  for pid in `ps -ef | grep /usr/local/bin/keepalive | grep -v grep | cut -d ' ' -f4`
+  for pid in `ps -ef | grep -e "/bin/bash.*keepalive\s" | grep -v grep | cut -d ' ' -f4`
   do
     kill -9 $pid
   done
